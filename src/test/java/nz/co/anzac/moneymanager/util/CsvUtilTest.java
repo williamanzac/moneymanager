@@ -2,6 +2,7 @@ package nz.co.anzac.moneymanager.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
 import java.util.List;
 
 import nz.co.anzac.moneymanager.model.BankStatementEntry;
@@ -30,6 +31,10 @@ public class CsvUtilTest {
 		Assert.assertNotNull(list);
 		Assert.assertFalse(list.isEmpty());
 		Assert.assertTrue(list.get(0) instanceof BankStatementEntry);
+		final Calendar calendar = Calendar.getInstance();
+		calendar.clear();
+		calendar.set(2016, 3, 29, 0, 0, 0);
+		Assert.assertEquals(calendar.getTime().getTime(), list.get(0).getDate().getTime());
 	}
 
 	@Test

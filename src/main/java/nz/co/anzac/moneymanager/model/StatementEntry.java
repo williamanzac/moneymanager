@@ -11,6 +11,8 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "statemententry")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -24,6 +26,8 @@ public class StatementEntry {
 	private Date date;
 	@ManyToOne
 	private Category category;
+	@ManyToOne
+	private Account account;
 
 	public Category getCategory() {
 		return category;
@@ -55,5 +59,15 @@ public class StatementEntry {
 
 	public void setOtherParty(final String otherParty) {
 		this.otherParty = otherParty;
+	}
+
+	@JsonIgnore
+	// we need to ignore this as it would cause recursion
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(final Account account) {
+		this.account = account;
 	}
 }

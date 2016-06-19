@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import nz.co.anzac.moneymanager.model.BankStatementEntry;
@@ -16,7 +17,7 @@ import org.apache.log4j.Logger;
 
 public class CsvUtil {
 	private static final Logger LOGGER = Logger.getLogger(CsvUtil.class);
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 	@SuppressWarnings("unchecked")
 	public List<StatementEntry> readStatement(final String data) throws IOException {
@@ -29,7 +30,9 @@ public class CsvUtil {
 			if (bank) {
 				final BankStatementEntry entry = new BankStatementEntry();
 				try {
-					entry.setDate(dateFormat.parse(columns[0]));
+					final String dateStr = columns[0];
+					final Date date = dateFormat.parse(dateStr);
+					entry.setDate(date);
 				} catch (final Exception e) {
 					LOGGER.error(e);
 				}
