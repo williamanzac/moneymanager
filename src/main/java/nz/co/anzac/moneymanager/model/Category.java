@@ -6,7 +6,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 public class Category {
@@ -19,7 +23,10 @@ public class Category {
 	private String colour;
 	@OneToMany
 	private List<Category> subCategories;
+	@ManyToOne
+	private Category parent;
 
+	@JsonProperty
 	public List<Category> getSubCategories() {
 		return subCategories;
 	}
@@ -28,6 +35,7 @@ public class Category {
 		this.subCategories = subCategories;
 	}
 
+	@JsonProperty
 	public long getId() {
 		return id;
 	}
@@ -36,6 +44,7 @@ public class Category {
 		this.id = id;
 	}
 
+	@JsonProperty
 	public String getName() {
 		return name;
 	}
@@ -44,11 +53,22 @@ public class Category {
 		this.name = name;
 	}
 
+	@JsonProperty
 	public String getColour() {
 		return colour;
 	}
 
 	public void setColour(final String colour) {
 		this.colour = colour;
+	}
+
+	@JsonIgnore
+	// we need to ignore this as it would cause recursion
+	public Category getParent() {
+		return parent;
+	}
+
+	public void setParent(final Category parent) {
+		this.parent = parent;
 	}
 }

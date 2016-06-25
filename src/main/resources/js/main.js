@@ -1,50 +1,3 @@
-function toEditable(observable, getRollbackValue) {
-    var rollbackValues = [];
-
-    getRollbackValue = getRollbackValue || function (observable) { return observable(); };
-
-    //a flag to indicate if the field is being edited
-    observable.isEditing = ko.observable(false);
-
-    //start an edit
-    observable.beginEdit = function () {
-        if (observable.isEditing()) { return; }
-
-        rollbackValues.push(getRollbackValue(observable));
-
-        observable.isEditing(true);
-    };
-
-    //end (commit) an edit
-    observable.endEdit = function () {
-        if (!observable.isEditing()) { return; }
-
-        observable.isEditing(false);
-    };
-
-    //cancel and roll-back an edit
-    observable.cancelEdit = function () {
-        if (!observable.isEditing() || !rollbackValues.length) { return; }
-
-        observable(rollbackValues.pop());
-
-        observable.isEditing(false);
-    };
-
-    //roll-back to historical committed values
-    observable.rollback = function () {
-        if (rollbackValues.length) {
-            observable(rollbackValues.pop());
-        }
-    };
-
-    return observable;
-}
-
-ko.editable = function (initial) {
-    return toEditable(ko.observable(initial));
-};
-
 function Account(data) {
 	this.id = ko.observable(data.id);
 	this.name = ko.editable(data.name);
@@ -74,6 +27,25 @@ function formatCurrency(value) {
 	return "$" + value.toFixed(2);
 }
 
+var CategoryNode = function(data) {
+	var self = this;
+	self.id = data.id;
+	self.text = data.name;
+	self.backColor = data.colour;
+	self.nodes = [];
+//    var mapped = $.map(data.subCategories, function(item) { return new CategoryNode(item) });
+//    this.subCategories(mapped);
+	ko.mapping.fromJS(data, self.mapOptions, self);
+}
+
+CategoryNode.prototype.mapOptions = {
+	nodes: {
+		create: function(args) {
+			return new CategoryNode(args.data);
+		}
+	}
+};
+
 function MoneyViewModel() {
     // Data
     var self = this;
@@ -96,12 +68,28 @@ function MoneyViewModel() {
         ],
         pageSize: 10
     });
-    //self.chosenFolderData = ko.observable();
-    //self.chosenMailData = ko.observable();
     self.fileData = ko.observable({
     	dataURL: ko.observable(),
     	base64String: ko.observable(),
     	text: ko.observable()
+    });
+/*    self.categories = new ko.treeview.viewmodel({
+    	data: []
+    });*/
+    self.selectedCategories = ko.observableArray([]);
+    self.newCategoryName = ko.observable();
+    self.categoryTransactions = new ko.simpleGrid.viewModel({
+    	data: ko.observableArray([]),
+        columns: [
+            { headerText: "Date", rowText: function(data) { return moment(data.date).format('DD/MMM/YYYY'); } },
+            { headerText: "Amount", rowText: function(data) { return formatCurrency(data.amount); } },
+            { headerText: "Other Party", rowText: "otherParty" },
+            { headerText: "Description", rowText: "description" },
+            { headerText: "Reference", rowText: "reference" },
+            { headerText: "Particulars", rowText: "particulars" },
+            { headerText: "Analysis Code", rowText: "analysisCode" },
+        ],
+        pageSize: 10
     });
 
     self.fileData().text.subscribe(function(data){
@@ -155,6 +143,34 @@ function MoneyViewModel() {
             }
         });
     };
+    self.getCategoryTree = function() {
+        $.getJSON("/categories/tree", function(data) {
+            //self.categories.data = data;
+        	self.selectedCategories([]);
+        	$("#categoryTree").treeview({
+        		data: data
+        	});
+    		$("#categoryTree").on('nodeSelected', function(event, node) {
+    			var selected = $("#categoryTree").treeview("getSelected");
+    			self.selectedCategories(selected);
+    			document.location("#Categories/" + node.id);
+    		});
+        });
+    };
+    self.newCategory = function() {
+    	//alert(ko.toJSON({ name: self.newCategoryName() }));
+        $.ajax("/categories/" + self.selectedCategories()[0].id, {
+            data: ko.toJSON({ name: self.newCategoryName() }),
+            type: "post",
+            contentType: "application/json",
+            dataType: "json",
+            success: function(result) {
+            	//alert(result.name);
+            	self.getCategoryTree();
+            }
+        });
+        self.newCategoryName("");
+    };
     //self.goToMail = function(mail) { location.hash = mail.folder + '/' + mail.id };
 
     // Client-side routes    
@@ -177,6 +193,12 @@ function MoneyViewModel() {
                 self.chosenAccountTransactions.data(data);
             });
         });
+        this.get("#Caregories/:category", function() {
+        	self.chosenSectionId("Categories");
+            $.getJSON("/categories/" + this.params.categories + "/transactions", function(data) {
+                self.categoryTransactions.data(data);
+            });
+        });
 /*
         this.get('#:folder/:mailId', function() {
             self.chosenFolderId(this.params.folder);
@@ -193,6 +215,7 @@ function MoneyViewModel() {
     });
     */
     self.getAccounts();
+    self.getCategoryTree();
 };
 
 ko.applyBindings(new MoneyViewModel());

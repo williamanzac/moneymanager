@@ -20,7 +20,7 @@ public class AccountDetail extends AccountName {
 		return number;
 	}
 
-	public void setNumber(String number) {
+	public void setNumber(final String number) {
 		this.number = number;
 	}
 
@@ -28,7 +28,7 @@ public class AccountDetail extends AccountName {
 		return available;
 	}
 
-	public void setAvailable(double available) {
+	public void setAvailable(final double available) {
 		this.available = available;
 	}
 
@@ -36,7 +36,7 @@ public class AccountDetail extends AccountName {
 		return balance;
 	}
 
-	public void setBalance(double balance) {
+	public void setBalance(final double balance) {
 		this.balance = balance;
 	}
 
@@ -44,7 +44,7 @@ public class AccountDetail extends AccountName {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(final String type) {
 		this.type = type;
 	}
 }

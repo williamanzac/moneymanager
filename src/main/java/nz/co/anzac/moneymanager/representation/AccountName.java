@@ -1,8 +1,8 @@
 package nz.co.anzac.moneymanager.representation;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import nz.co.anzac.moneymanager.model.Account;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AccountName {
 	private long id;
@@ -18,7 +18,7 @@ public class AccountName {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(final long id) {
 		this.id = id;
 	}
 
@@ -27,7 +27,7 @@ public class AccountName {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 }

@@ -1,25 +1,16 @@
 package nz.co.anzac.moneymanager.dao;
 
-import io.dropwizard.hibernate.AbstractDAO;
-
-import java.io.Serializable;
-import java.util.List;
-
 import nz.co.anzac.moneymanager.model.Account;
 
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 
-public class AccountDAO extends AbstractDAO<Account> {
-	private final StatementEntryDAO statementEntryDAO;
+public class AccountDAO extends AbstractCRUDDAO<Account> {
+	final StatementEntryDAO statementEntryDAO;
 
 	public AccountDAO(final SessionFactory sessionFactory, final StatementEntryDAO statementEntryDAO) {
 		super(sessionFactory);
 		this.statementEntryDAO = statementEntryDAO;
-	}
-
-	public List<Account> list() {
-		return list(currentSession().createCriteria(getEntityClass()));
 	}
 
 	@Override
@@ -31,10 +22,5 @@ public class AccountDAO extends AbstractDAO<Account> {
 			});
 		}
 		return super.persist(entity);
-	}
-
-	@Override
-	public Account get(final Serializable id) {
-		return super.get(id);
 	}
 }

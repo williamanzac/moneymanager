@@ -35,7 +35,7 @@ public class AccountResource {
 	@GET
 	@UnitOfWork
 	public Response listAccounts() {
-		final List<Account> list = accountService.listAccounts();
+		final List<Account> list = accountService.list();
 		final List<AccountName> names = new ArrayList<>();
 		list.forEach(a -> {
 			names.add(new AccountName(a));
@@ -46,7 +46,7 @@ public class AccountResource {
 	@POST
 	@UnitOfWork
 	public Response newAccount(final Account account) {
-		final Account account2 = accountService.newAccount(account);
+		final Account account2 = accountService.create(account);
 		final AccountDetail accountDetail = new AccountDetail(account2);
 		return Response.ok(accountDetail).build();
 	}
@@ -54,7 +54,7 @@ public class AccountResource {
 	@PUT
 	@UnitOfWork
 	public Response updateAccount(final Account account) {
-		final Account account2 = accountService.updateAccount(account);
+		final Account account2 = accountService.update(account);
 		final AccountDetail accountDetail = new AccountDetail(account2);
 		return Response.ok(accountDetail).build();
 	}
@@ -63,7 +63,7 @@ public class AccountResource {
 	@Path("/{id}")
 	@UnitOfWork
 	public Response getAccount(final @PathParam("id") long id) {
-		final Account account = accountService.getAccount(id);
+		final Account account = accountService.read(id);
 		final AccountDetail accountDetail = new AccountDetail(account);
 		return Response.ok(accountDetail).build();
 	}

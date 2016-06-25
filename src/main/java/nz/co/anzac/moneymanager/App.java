@@ -9,6 +9,7 @@ import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
 import nz.co.anzac.moneymanager.config.AppConfiguration;
 import nz.co.anzac.moneymanager.dao.AccountDAO;
+import nz.co.anzac.moneymanager.dao.CategoryDAO;
 import nz.co.anzac.moneymanager.dao.StatementEntryDAO;
 import nz.co.anzac.moneymanager.model.Account;
 import nz.co.anzac.moneymanager.model.BankStatementEntry;
@@ -18,8 +19,10 @@ import nz.co.anzac.moneymanager.model.CreditStatementEntry;
 import nz.co.anzac.moneymanager.model.Rule;
 import nz.co.anzac.moneymanager.model.StatementEntry;
 import nz.co.anzac.moneymanager.resource.AccountResource;
+import nz.co.anzac.moneymanager.resource.CategoryResource;
 import nz.co.anzac.moneymanager.resource.UIResource;
 import nz.co.anzac.moneymanager.service.AccountService;
+import nz.co.anzac.moneymanager.service.CategoryService;
 
 import org.hibernate.SessionFactory;
 
@@ -61,14 +64,18 @@ public class App extends Application<AppConfiguration> {
 
 		final StatementEntryDAO statementEntryDAO = new StatementEntryDAO(sessionFactory);
 		final AccountDAO accountDAO = new AccountDAO(sessionFactory, statementEntryDAO);
+		final CategoryDAO categoryDAO = new CategoryDAO(sessionFactory);
 
 		final AccountService accountService = new AccountService(accountDAO, statementEntryDAO);
+		final CategoryService categoryService = new CategoryService(categoryDAO, statementEntryDAO);
 
 		final AccountResource accountResource = new AccountResource(accountService);
 		final UIResource uiResource = new UIResource();
+		final CategoryResource categoryResource = new CategoryResource(categoryService);
 
 		environment.jersey().register(accountResource);
 		environment.jersey().register(uiResource);
+		environment.jersey().register(categoryResource);
 		// environment.jersey().register(AccountResource.class);
 		// environment.jersey().packages("nz.co.anzac.moneymanager.service", "nz.co.anzac.moneymanager.resource",
 		// "nz.co.anzac.moneymanager.dao");

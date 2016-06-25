@@ -155,8 +155,20 @@
 					</div>
 				</div>
 				<div class="col-xs-12 col-md-2" id="categories" data-bind="visible: chosenSectionId() == 'Categories'">
+    				<div class="input-group">
+    					<input type="text" class="form-control" placeholder="Category Name" data-bind="value: newCategoryName, valueUpdate: 'afterkeydown', enable: selectedCategories().length > 0" />
+    					<span class="input-group-btn">
+							<button type="button" class="btn btn-success" data-bind="click: newCategory, enable: newCategoryName() && selectedCategories().length > 0">
+								<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+							</button>
+						</span>
+					</div>
+					<div id="categoryTree">
+					</div>
+				</div>
+				<div class="col-xs-12 col-md-10>
 					<div class="panel panel-default">
-						<div class="panel-body" id="categoryTree">
+						<div class="panel-body" data-bind="simpleGrid: $root.categoryTransactions, simpleGridTemplate: 'transactionsGrid', simpleGridPagerTemplate: 'transactionsPager'">
 						</div>
 					</div>
 				</div>
@@ -198,9 +210,18 @@
 				</div>
 			</div>
 		</script>
+		<script type="text/html" id="treeNode">
+			<li class="list-group-item">
+				<span class="glyphicon glyphicon-plus"></span>
+				<span data-bind="text: name"></span>
+			</li>
+			<!-- ko template: {name: 'treeNode', foreach: subCategories} -->
+			<!-- /ko -->
+		</script>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/sammy.js/0.7.6/sammy.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 		<script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
@@ -210,6 +231,8 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
 		<script src="/js/knockout-file-bindings.js"></script>
 		<script src="/js/knockout.simpleGrid.3.0.js"></script>
+		<script src="/js/knockout.editable.js"></script>
+		<script src="/js/knockout.treeview.js"></script>
 		<script src="/js/main.js"></script>
 	</body>
 </html>
