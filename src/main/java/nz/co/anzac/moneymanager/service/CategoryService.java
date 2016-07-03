@@ -18,12 +18,16 @@ public class CategoryService extends AbstractCRUDService<Category> {
 	public Category getRootCategory() throws ServiceException {
 		try {
 			return ((CategoryDAO) dao).getRootCategory();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new ServiceException(e);
 		}
 	}
 
-	public List<StatementEntry> getTransactions(long id) {
+	public List<StatementEntry> getTransactions(final long id) {
 		return statementEntryDAO.getEntriesByCategoryId(id);
+	}
+
+	public Category findCategoryByName(final String name) {
+		return ((CategoryDAO) dao).findCategoryByName(name);
 	}
 }

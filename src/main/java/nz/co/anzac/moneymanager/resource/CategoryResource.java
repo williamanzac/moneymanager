@@ -36,7 +36,7 @@ public class CategoryResource {
 	@UnitOfWork
 	public Response listCategories() {
 		if (categoryService.list().isEmpty()) {
-			Category root = new Category();
+			final Category root = new Category();
 			root.setName("root");
 			categoryService.create(root);
 		}

@@ -31,4 +31,9 @@ public class CategoryDAO extends AbstractCRUDDAO<Category> {
 	public Category getRootCategory() {
 		return uniqueResult(currentSession().createQuery("from Category as cat where cat.parent = null"));
 	}
+
+	public Category findCategoryByName(final String name) {
+		return uniqueResult(currentSession().createQuery("from Category as cat where cat.name = :name").setString(
+				"name", name));
+	}
 }

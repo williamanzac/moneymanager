@@ -9,20 +9,26 @@ import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
 import nz.co.anzac.moneymanager.config.AppConfiguration;
 import nz.co.anzac.moneymanager.dao.AccountDAO;
+import nz.co.anzac.moneymanager.dao.BudgetEntryDAO;
 import nz.co.anzac.moneymanager.dao.CategoryDAO;
 import nz.co.anzac.moneymanager.dao.StatementEntryDAO;
 import nz.co.anzac.moneymanager.model.Account;
 import nz.co.anzac.moneymanager.model.BankStatementEntry;
+import nz.co.anzac.moneymanager.model.BudgetEntry;
 import nz.co.anzac.moneymanager.model.Category;
 import nz.co.anzac.moneymanager.model.Condition;
 import nz.co.anzac.moneymanager.model.CreditStatementEntry;
 import nz.co.anzac.moneymanager.model.Rule;
 import nz.co.anzac.moneymanager.model.StatementEntry;
 import nz.co.anzac.moneymanager.resource.AccountResource;
+import nz.co.anzac.moneymanager.resource.BudgetResource;
 import nz.co.anzac.moneymanager.resource.CategoryResource;
+import nz.co.anzac.moneymanager.resource.TransactionResource;
 import nz.co.anzac.moneymanager.resource.UIResource;
 import nz.co.anzac.moneymanager.service.AccountService;
+import nz.co.anzac.moneymanager.service.BudgetEntryService;
 import nz.co.anzac.moneymanager.service.CategoryService;
+import nz.co.anzac.moneymanager.service.StatementEntryService;
 
 import org.hibernate.SessionFactory;
 
@@ -37,7 +43,7 @@ public class App extends Application<AppConfiguration> {
 
 	private final HibernateBundle<AppConfiguration> hibernate = new HibernateBundle<AppConfiguration>(
 			StatementEntry.class, BankStatementEntry.class, CreditStatementEntry.class, Category.class,
-			Condition.class, Rule.class, Account.class) {
+			Condition.class, Rule.class, Account.class, BudgetEntry.class) {
 		@Override
 		public DataSourceFactory getDataSourceFactory(final AppConfiguration configuration) {
 			return configuration.getDataSourceFactory();
@@ -65,17 +71,26 @@ public class App extends Application<AppConfiguration> {
 		final StatementEntryDAO statementEntryDAO = new StatementEntryDAO(sessionFactory);
 		final AccountDAO accountDAO = new AccountDAO(sessionFactory, statementEntryDAO);
 		final CategoryDAO categoryDAO = new CategoryDAO(sessionFactory);
+		final BudgetEntryDAO budgetEntryDAO = new BudgetEntryDAO(sessionFactory);
 
 		final AccountService accountService = new AccountService(accountDAO, statementEntryDAO);
 		final CategoryService categoryService = new CategoryService(categoryDAO, statementEntryDAO);
+		final StatementEntryService statementEntryService = new StatementEntryService(statementEntryDAO,
+				categoryService);
+		final BudgetEntryService budgetEntryService = new BudgetEntryService(budgetEntryDAO, categoryService,
+				statementEntryService);
 
 		final AccountResource accountResource = new AccountResource(accountService);
 		final UIResource uiResource = new UIResource();
 		final CategoryResource categoryResource = new CategoryResource(categoryService);
+		final TransactionResource transactionResource = new TransactionResource(statementEntryService);
+		final BudgetResource budgetResource = new BudgetResource(budgetEntryService);
 
 		environment.jersey().register(accountResource);
 		environment.jersey().register(uiResource);
 		environment.jersey().register(categoryResource);
+		environment.jersey().register(transactionResource);
+		environment.jersey().register(budgetResource);
 		// environment.jersey().register(AccountResource.class);
 		// environment.jersey().packages("nz.co.anzac.moneymanager.service", "nz.co.anzac.moneymanager.resource",
 		// "nz.co.anzac.moneymanager.dao");

@@ -154,7 +154,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-xs-12 col-md-2" id="categories" data-bind="visible: chosenSectionId() == 'Categories'">
+				<div class="col-xs-12 col-md-3" id="categories" data-bind="visible: chosenSectionId() == 'Categories'">
     				<div class="input-group">
     					<input type="text" class="form-control" placeholder="Category Name" data-bind="value: newCategoryName, valueUpdate: 'afterkeydown', enable: selectedCategories().length > 0" />
     					<span class="input-group-btn">
@@ -166,14 +166,55 @@
 					<div id="categoryTree">
 					</div>
 				</div>
-				<div class="col-xs-12 col-md-10>
+				<div class="col-xs-12 col-md-9" data-bind="visible: chosenSectionId() == 'Categories'">
 					<div class="panel panel-default">
 						<div class="panel-body" data-bind="simpleGrid: $root.categoryTransactions, simpleGridTemplate: 'transactionsGrid', simpleGridPagerTemplate: 'transactionsPager'">
 						</div>
 					</div>
 				</div>
+				<div class="col-xs-12" id="budget" data-bind="visible: chosenSectionId() == 'Budget'">
+					<div class="panel panel-default">
+						<table class="table table-hover table-stripped">
+							<thead>
+								<tr>
+									<th>Categories</th>
+									<th>Base</th>
+									<th>Jan</th>
+									<th>Feb</th>
+									<th>Mar</th>
+									<th>
+										<button type="button" class="btn btn-success">
+											<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+										</button>
+									</th>
+								</tr>
+							</thead>
+							<tbody data-bind="template: {name: 'budgetGrid', if: rootCategory, data: rootCategory}">
+							</tbody>
+						</table>
+					</div>
+				</div>
 			</div>
 		</div>
+
+		<script type="text/html" id="budgetGrid">
+			<tr>
+				<td data-bind="text: text"></td>
+				<td>budget vs average</td>
+				<td>budget vs actual</td>
+				<td>
+					<button type="button" class="btn btn-success">
+						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+					</button>
+				</td>
+				<td>budget vs actual</td>
+				<td></td>
+			</tr>
+			<!-- ko if: 'nodes' in $data -->
+				<!-- ko template: {name: 'budgetGrid', foreach: nodes} -->
+				<!-- /ko -->
+			<!-- /ko -->
+		</script>
 
 		<script type="text/html" id="transactionsGrid">
 			<div class="row">
@@ -183,9 +224,32 @@
 							<th data-bind="text: headerText"></th>
 						</tr>
 					</thead>
-					<tbody data-bind="foreach: itemsOnCurrentPage">
+					<tbody data-bind="foreach: {data: itemsOnCurrentPage, as: 'row'}">
 						<tr data-bind="foreach: $parent.columns">
+							<!-- ko if: headerText != "Category" -->
 							<td data-bind="text: typeof rowText == 'function' ? rowText($parent) : $parent[rowText]"></td>
+							<!-- /ko -->
+							<!-- ko if: headerText == "Category" -->
+							<td>
+			    				<div data-bind="visible: !row.category.isEditing()">
+									<span data-bind="text: row.category"></span>
+									<a class="btn" data-bind="click: row.category.beginEdit">
+										<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+									</a>
+								</div>
+			    				<div class="input-group input-group-sm" data-bind="visible: row.category.isEditing">
+			    					<select class="form-control" data-bind="options: $root.categories, optionsCaption: 'choose...', value: row.category" />
+			    					<span class="input-group-btn">
+										<button type="button" class="btn btn-danger" data-bind="click: row.category.cancelEdit">
+											<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+										</button>
+										<button type="button" class="btn btn-success" data-bind="click: function() {$root.updateTransaction(row); row.category.endEdit();}">
+											<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+										</button>
+									</span>
+								</div>
+							</td>
+							<!-- /ko -->
 						</tr>
 					</tbody>
 				</table>
