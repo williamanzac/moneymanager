@@ -11,14 +11,21 @@ public class BudgetEntryDAO extends AbstractCRUDDAO<BudgetEntry> {
 		super(sessionFactory);
 	}
 
-	public List<BudgetEntry> getEntriesByCategoryId(final long id) {
-		return list(currentSession().createQuery("from BudgetEntry as entry where entry.category.id = :id").setLong(
-				"id", id));
+	public BudgetEntry getEntryByCategoryId(final long id) {
+		return uniqueResult(currentSession().createQuery("from BudgetEntry as entry where entry.category.id = :id")
+				.setLong("id", id));
 	}
 
 	public List<BudgetEntry> listByMonth(final int year, final int month) {
 		return list(currentSession()
-				.createQuery("from BudgetEntry as entry where entry.month = :month and entry.year = :year")
+				.createQuery("from BudgetEntry as entry where entry.forMonth = :month and entry.forYear = :year")
 				.setInteger("month", month).setInteger("year", year));
+	}
+
+	public BudgetEntry getEntryByMonthAndCategory(final long id, final int year, final int month) {
+		return uniqueResult(currentSession()
+				.createQuery(
+						"from BudgetEntry as entry where entry.category.id = :id and entry.forMonth = :month and entry.forYear = :year")
+						.setLong("id", id).setInteger("month", month).setInteger("year", year));
 	}
 }

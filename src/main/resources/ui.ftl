@@ -12,6 +12,7 @@
 		<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"> -->
 		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.11/css/dataTables.bootstrap.min.css">
 		<link rel="stylesheet" href="https://cdn.datatables.net/select/1.1.2/css/select.bootstrap.min.css">
+		<link rel="stylesheet" href="/css/bootstrap.min.css">
 		<link rel="stylesheet" href="/css/knockout-file-bindings.css" />
 
 		<link rel="stylesheet" href="/css/style.css" />
@@ -31,7 +32,10 @@
 				<div id="navbar" class="collapse navbar-collapse">
 					<ul class="nav navbar-nav" data-bind="foreach: sections">
 						<li data-bind="css: {active: $data == $root.chosenSectionId()}">
-							<a data-bind="text: $data, click: $root.goToSection"></a>
+							<a data-bind="click: $root.goToSection">
+								<i data-bind="css: 'glyphicon glyphicon-' + $data"></i>
+								<span data-bind="text: $data"></span>
+							</a>
 						</li>
 					</ul>
 				</div>
@@ -67,9 +71,11 @@
 				    				<div data-bind="visible: !name.isEditing()">
 										<h1>
 											<span data-bind="text: name"></span>
-											<a class="small btn" data-bind="click: name.beginEdit">
-												<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-											</a>
+											<small>
+												<a class="btn" data-bind="click: name.beginEdit">
+													<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+												</a>
+											</small>
 										</h1>
 									</div>
 				    				<div class="input-group input-group-lg" data-bind="visible: name.isEditing">
@@ -174,47 +180,12 @@
 				</div>
 				<div class="col-xs-12" id="budget" data-bind="visible: chosenSectionId() == 'Budget'">
 					<div class="panel panel-default">
-						<table class="table table-hover table-stripped">
-							<thead>
-								<tr>
-									<th>Categories</th>
-									<th>Base</th>
-									<th>Jan</th>
-									<th>Feb</th>
-									<th>Mar</th>
-									<th>
-										<button type="button" class="btn btn-success">
-											<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-										</button>
-									</th>
-								</tr>
-							</thead>
-							<tbody data-bind="template: {name: 'budgetGrid', if: rootCategory, data: rootCategory}">
-							</tbody>
-						</table>
+						<div class="panel-body" data-bind="budgetGrid: budgetEntries">
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-
-		<script type="text/html" id="budgetGrid">
-			<tr>
-				<td data-bind="text: text"></td>
-				<td>budget vs average</td>
-				<td>budget vs actual</td>
-				<td>
-					<button type="button" class="btn btn-success">
-						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-					</button>
-				</td>
-				<td>budget vs actual</td>
-				<td></td>
-			</tr>
-			<!-- ko if: 'nodes' in $data -->
-				<!-- ko template: {name: 'budgetGrid', foreach: nodes} -->
-				<!-- /ko -->
-			<!-- /ko -->
-		</script>
 
 		<script type="text/html" id="transactionsGrid">
 			<div class="row">
@@ -274,14 +245,6 @@
 				</div>
 			</div>
 		</script>
-		<script type="text/html" id="treeNode">
-			<li class="list-group-item">
-				<span class="glyphicon glyphicon-plus"></span>
-				<span data-bind="text: name"></span>
-			</li>
-			<!-- ko template: {name: 'treeNode', foreach: subCategories} -->
-			<!-- /ko -->
-		</script>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
@@ -297,6 +260,7 @@
 		<script src="/js/knockout.simpleGrid.3.0.js"></script>
 		<script src="/js/knockout.editable.js"></script>
 		<script src="/js/knockout.treeview.js"></script>
+		<script src="/js/knockout.budgetGrid.js"></script>
 		<script src="/js/main.js"></script>
 	</body>
 </html>

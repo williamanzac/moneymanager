@@ -13,10 +13,11 @@ body {
 	overflow-y: auto;
 }*/
 
-a.btn {
-	color: #777;
+a.btn, a.btn:hover {
+/*	color: #777;*/
+	border: none;
 }
 
-#transactionsPagerButtons {
+#transactionsPagerButtons, .budgetGridButtons {
 	margin-right: 15px;
 }

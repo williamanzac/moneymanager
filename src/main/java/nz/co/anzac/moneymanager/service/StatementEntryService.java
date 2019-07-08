@@ -37,6 +37,6 @@ public class StatementEntryService extends AbstractCRUDService<StatementEntry> {
 	}
 
 	public double entryMonthAvg(final long catId) {
-		return 0;
+		return ((StatementEntryDAO) dao).entryAverage(catId);
 	}
 }

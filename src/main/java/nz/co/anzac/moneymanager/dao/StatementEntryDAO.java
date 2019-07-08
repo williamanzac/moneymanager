@@ -26,7 +26,14 @@ public class StatementEntryDAO extends AbstractCRUDDAO<StatementEntry> {
 		final Object value = currentSession()
 				.createQuery(
 						"select sum(entry.amount) from StatementEntry entry where entry.category.id = :id and entry.date between :startDate and :endDate")
-						.setLong("id", id).setDate("startDate", startDate).setDate("endDate", endDate).uniqueResult();
+				.setLong("id", id).setDate("startDate", startDate).setDate("endDate", endDate).uniqueResult();
+		return value == null ? 0 : (Double) value;
+	}
+
+	public double entryAverage(long catId) {
+		final Object value = currentSession()
+				.createQuery("select avg(entry.amount) from StatementEntry entry where entry.category.id = :id")
+				.setLong("id", catId).uniqueResult();
 		return value == null ? 0 : (Double) value;
 	}
 }

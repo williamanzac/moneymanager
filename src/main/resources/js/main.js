@@ -35,6 +35,19 @@ function Transaction(data) {
 	 */
 }
 
+function BudgetEntry(data) {
+	this.budgetAmount = ko.editable(data.budgetAmount);
+	this.actualAmount = data.actualAmount;
+	if (data.category != null) {
+		this.categoryId = data.category.id;
+	} else {
+		this.categoryId = null;
+	}
+	this.month = data.forMonth;
+	this.year = data.forYear;
+	this.id = data.id;
+}
+
 function formatCurrency(value) {
 	return "$" + value.toFixed(2);
 }
@@ -126,6 +139,10 @@ function MoneyViewModel() {
 	});
 	self.rootCategory = ko.observable();
 
+	self.budgetEntries = new ko.budgetGrid.viewModel({});
+	// self.budgetEntries.categoryTree = ko.observable();
+	// self.budgetEntries.data = ko.observableArray([]);
+
 	self.fileData = ko.observable({
 	    dataURL : ko.observable(),
 	    base64String : ko.observable(),
@@ -203,8 +220,9 @@ function MoneyViewModel() {
 				// alert(ko.toJSON(node));
 				location.hash = "Categories/" + node.nodeId;
 			});
-			//alert(data[0].text);
+			// alert(data[0].text);
 			self.rootCategory(data[0]);
+			self.budgetEntries.categoryTree(data[0]);
 		});
 		$.getJSON("/categories", function(allData) {
 			var mapped = $.map(allData, function(item) {
@@ -230,9 +248,18 @@ function MoneyViewModel() {
 		});
 		self.newCategoryName("");
 	};
+	self.getBudget = function() {
+		$.getJSON("/budget/entries", function(allData) {
+			var mapped = $.map(allData, function(item) {
+				return new BudgetEntry(item);
+			});
+			self.budgetEntries.data(mapped);
+		});
+	};
 
 	self.getCategoryTree();
 	self.getAccounts();
+	self.getBudget();
 
 	// Client-side routes
 	Sammy(function() {
@@ -260,7 +287,7 @@ function MoneyViewModel() {
 		this.get("#Categories/:category", function() {
 			self.chosenSectionId("Categories");
 			var node = $("#categoryTree").treeview("getNode", this.params.category);
-			$("#categoryTree").treeview("selectNode", this.params.category, {
+			$("#categoryTree").treeview("selectNode", node, {
 				silent : true
 			})
 			$.getJSON("/categories/" + node.id + "/transactions", function(data) {

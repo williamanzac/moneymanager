@@ -1,20 +1,25 @@
 package nz.co.anzac.moneymanager.representation;
 
+import nz.co.anzac.moneymanager.model.BudgetEntry;
+
 public class MonthYear implements Comparable<MonthYear> {
 	private int month;
 	private int year;
 
-	public MonthYear(int month, int year) {
-		super();
+	public MonthYear(final int month, final int year) {
 		this.month = month;
 		this.year = year;
+	}
+
+	public MonthYear(final BudgetEntry entry) {
+		this(entry.getForMonth(), entry.getForYear());
 	}
 
 	public int getMonth() {
 		return month;
 	}
 
-	public void setMonth(int month) {
+	public void setMonth(final int month) {
 		this.month = month;
 	}
 
@@ -22,7 +27,7 @@ public class MonthYear implements Comparable<MonthYear> {
 		return year;
 	}
 
-	public void setYear(int year) {
+	public void setYear(final int year) {
 		this.year = year;
 	}
 
@@ -36,24 +41,29 @@ public class MonthYear implements Comparable<MonthYear> {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
-		MonthYear other = (MonthYear) obj;
-		if (month != other.month)
+		}
+		final MonthYear other = (MonthYear) obj;
+		if (month != other.month) {
 			return false;
-		if (year != other.year)
+		}
+		if (year != other.year) {
 			return false;
+		}
 		return true;
 	}
 
 	@Override
-	public int compareTo(MonthYear o) {
-		int compare = Integer.compare(year, o.year);
+	public int compareTo(final MonthYear o) {
+		final int compare = Integer.compare(year, o.year);
 		if (compare != 0) {
 			return compare;
 		}

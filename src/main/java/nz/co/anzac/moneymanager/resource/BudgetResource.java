@@ -68,6 +68,14 @@ public class BudgetResource {
 		return Response.ok(entry).build();
 	}
 
+	@POST
+	@Path("/{year}/{month}")
+	@UnitOfWork
+	public Response createMonthEntries(final @PathParam("year") int year, final @PathParam("month") int month) {
+		final List<BudgetEntry> entries = budgetEntryService.createMonthEntries(year, month);
+		return Response.ok(entries).build();
+	}
+
 	@PUT
 	@Path("/entries")
 	@UnitOfWork

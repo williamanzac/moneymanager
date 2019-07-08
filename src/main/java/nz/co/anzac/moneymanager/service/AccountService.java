@@ -21,7 +21,13 @@ public class AccountService extends AbstractCRUDService<Account> {
 		final Account account = read(id);
 		try {
 			final List<StatementEntry> list = new CsvUtil().readStatement(transactions);
-			account.getEntries().addAll(list);
+			final List<StatementEntry> entries = account.getEntries();
+			list.forEach(e -> {
+				e.setAccount(account);
+				if (!entries.contains(e)) {
+					entries.add(e);
+				}
+			});
 			update(account);
 		} catch (final IOException e) {
 			throw new ServiceException(e);
