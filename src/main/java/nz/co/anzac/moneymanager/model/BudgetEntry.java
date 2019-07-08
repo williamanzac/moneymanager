@@ -74,6 +74,27 @@ public class BudgetEntry {
 		this.forYear = forYear;
 	}
 
+	public void update(final BudgetEntry that) {
+		if (that.id != 0) {
+			id = that.id;
+		}
+		if (that.actualAmount != 0) {
+			actualAmount = that.actualAmount;
+		}
+		if (that.budgetAmount != 0) {
+			budgetAmount = that.budgetAmount;
+		}
+		if (that.category != null) {
+			category = that.category;
+		}
+		if (that.forMonth != 0) {
+			forMonth = that.forMonth;
+		}
+		if (that.forYear != 0) {
+			forYear = that.forYear;
+		}
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

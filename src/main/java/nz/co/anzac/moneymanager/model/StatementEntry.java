@@ -70,4 +70,50 @@ public class StatementEntry {
 	public void setAccount(final Account account) {
 		this.account = account;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (account == null ? 0 : account.hashCode());
+		result = prime * result + (date == null ? 0 : date.hashCode());
+		result = prime * result + (otherParty == null ? 0 : otherParty.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final StatementEntry other = (StatementEntry) obj;
+		if (account == null) {
+			if (other.account != null) {
+				return false;
+			}
+		} else if (!account.equals(other.account)) {
+			return false;
+		}
+		if (date == null) {
+			if (other.date != null) {
+				return false;
+			}
+		} else if (!date.equals(other.date)) {
+			return false;
+		}
+		if (otherParty == null) {
+			if (other.otherParty != null) {
+				return false;
+			}
+		} else if (!otherParty.equals(other.otherParty)) {
+			return false;
+		}
+		return true;
+	}
 }
