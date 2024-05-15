@@ -7,6 +7,7 @@ import nz.co.anzac.moneymanager.model.StatementEntry;
 
 import org.hibernate.SessionFactory;
 
+@SuppressWarnings({ "unchecked", "deprecation" })
 public class StatementEntryDAO extends AbstractCRUDDAO<StatementEntry> {
 	public StatementEntryDAO(final SessionFactory sessionFactory) {
 		super(sessionFactory);

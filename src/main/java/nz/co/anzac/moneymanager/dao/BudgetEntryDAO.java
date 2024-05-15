@@ -6,6 +6,7 @@ import nz.co.anzac.moneymanager.model.BudgetEntry;
 
 import org.hibernate.SessionFactory;
 
+@SuppressWarnings({ "unchecked", "deprecation" })
 public class BudgetEntryDAO extends AbstractCRUDDAO<BudgetEntry> {
 	public BudgetEntryDAO(final SessionFactory sessionFactory) {
 		super(sessionFactory);

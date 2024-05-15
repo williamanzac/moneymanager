@@ -5,6 +5,7 @@ import nz.co.anzac.moneymanager.model.Category;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 
+@SuppressWarnings({ "unchecked", "deprecation" })
 public class CategoryDAO extends AbstractCRUDDAO<Category> {
 	public CategoryDAO(final SessionFactory sessionFactory) {
 		super(sessionFactory);

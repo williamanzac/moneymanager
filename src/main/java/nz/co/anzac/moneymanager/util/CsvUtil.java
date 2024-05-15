@@ -13,10 +13,11 @@ import nz.co.anzac.moneymanager.model.CreditStatementEntry;
 import nz.co.anzac.moneymanager.model.StatementEntry;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CsvUtil {
-	private static final Logger LOGGER = Logger.getLogger(CsvUtil.class);
+	private static final Logger LOGGER =  LogManager.getLogger(CsvUtil.class);
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 	@SuppressWarnings("unchecked")

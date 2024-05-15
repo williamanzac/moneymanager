@@ -14,6 +14,7 @@ public abstract class AbstractCRUDDAO<T> extends AbstractDAO<T> {
 		super(sessionFactory);
 	}
 
+	@SuppressWarnings("deprecation")
 	public List<T> list() {
 		return list(currentSession().createCriteria(getEntityClass()));
 	}
